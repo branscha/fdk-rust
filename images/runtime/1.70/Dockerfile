@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 #
 # Copyright (c) 2019, 2020 Oracle and/or its affiliates. All rights reserved.
 #
@@ -15,16 +14,10 @@
 # limitations under the License.
 #
 
+FROM alpine:3.17
 
-set -xe
+RUN apk update && apk upgrade \
+  && apk add ca-certificates \
+  && rm -rf /var/cache/apk/*
 
-if [ -z "$1" ];then
-  echo "Please supply Rust version as argument to build image." >> /dev/stderr
-  exit 2
-fi
-
-rustversion=$1
-
-pushd images/build/${rustversion} && docker build -t fnproject/rust:${rustversion}-dev . && popd
-pushd images/runtime/${rustversion} && docker build -t fnproject/rust:${rustversion} . && popd
-pushd images/init && docker build -t fnproject/rust:init . && popd
+RUN addgroup -g 1000 -S fn && adduser -S -u 1000 -G fn fn
