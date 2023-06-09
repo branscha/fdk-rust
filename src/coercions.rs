@@ -13,6 +13,7 @@ pub enum ContentType {
 
 impl ContentType {
     pub fn from_str(s: &str) -> Self {
+        eprintln!("***** content-type: {}", s);
         match s {
             "application/json" => ContentType::JSON,
             "text/yaml" | "application/yaml" => ContentType::YAML,
@@ -142,4 +143,32 @@ impl<T: Serialize> OutputCoercible for T {
             }),
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+
+use super::*;
+
+    // Parsing empty input should result in empty string.
+    #[test]
+    fn empty_text_plain() {
+        let res = String::try_decode_plain(vec![]);
+        println!("{:?}", res);
+        match res {
+            Ok(str) => assert_eq!("", str),
+            Err(err) => panic!("{:?}", err)
+        }
+    }
+
+    // #[test]
+    // fn empty_text_json() {
+    //     let res = Option::<String>::try_decode_json(vec![]);
+    //     println!("{:?}", res);
+    //     match res {
+    //         Ok(option) => assert!(option.is_none()),
+    //         Err(err) => panic!("{:?}", err)
+    //     }
+    // }
+
 }
