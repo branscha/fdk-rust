@@ -59,13 +59,13 @@ impl RuntimeContext {
     /// from_req creates a RuntimeContext from a hyper Request reference.
     pub fn from_req<T>(req: &hyper::Request<T>) -> Self {
         let headers = {
-            let fn_intent = req
-                .headers()
-                .get("Fn-Intent")
-                .map(|value| value.to_str().unwrap())
-                .unwrap_or_else(|| "");
+            // let fn_intent = req
+            //     .headers()
+            //     .get("Fn-Intent")
+            //     .map(|value| value.to_str().unwrap())
+            //     .unwrap_or_else(|| "httprequest");
 
-            if fn_intent == "httprequest" {
+            // if fn_intent == "httprequest" {
                 req.headers()
                     .iter()
                     .filter(|(k, _v)| *k == CONTENT_TYPE || k.as_str().starts_with("Fn-Http-H-"))
@@ -74,12 +74,10 @@ impl RuntimeContext {
                         m.insert(k, v);
                         m
                     })
-            } else {
-                req.headers().clone()
-            }
+            // } else {
+            //     req.headers().clone()
+            // }
         };
-
-        println!("{:?}", headers);
 
         Self {
             config: CONFIG_FROM_ENV.clone(),
