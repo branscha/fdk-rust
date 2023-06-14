@@ -21,7 +21,6 @@ const YAML_APP_MIME : &str = "application/yaml";
 
 impl ContentType {
     pub fn from_str(s: &str) -> Self {
-        eprintln!("***** content-type: {}", s);
         match s {
             JSON_MIME => ContentType::JSON,
             YAML_TEXT_MIME | YAML_APP_MIME => ContentType::YAML,

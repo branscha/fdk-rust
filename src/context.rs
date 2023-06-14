@@ -93,8 +93,6 @@ impl RuntimeContext {
             }
         };
 
-        eprintln!("***** headers: {:?}", &headers);
-
         Self {
             config: CONFIG_FROM_ENV.clone(),
             headers: headers.clone(),
