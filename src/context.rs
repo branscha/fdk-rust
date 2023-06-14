@@ -22,6 +22,7 @@ lazy_static! {
     );
 }
 
+#[allow(unused)]
 #[derive(Clone)]
 /// `RuntimeContext` contains the config and metadata of request and response. A mutable reference
 /// to RuntimeContext gets passed into the user function for accessing request metadata and adding
@@ -38,6 +39,15 @@ pub struct RuntimeContext {
     response_status_code: Option<StatusCode>,
 }
 
+/// Resolve the ContentType based on the corresponding header parameter.
+/// If no content-type was provided or an unknown content type is provided it will default to JSON.
+/// Supported types are:
+/// const JSON_MIME : &str = "application/json";
+/// - text/plain
+/// - application/x-www-form-urlencoded
+/// - text/xml, application/xml
+/// - text/yaml, application/yaml
+/// - application/json
 fn resolve_content_type(v: Option<&hyper::header::HeaderValue>) -> ContentType {
     match v {
         Some(value) => ContentType::from_str(value.to_str().unwrap_or("")),
@@ -59,6 +69,8 @@ impl RuntimeContext {
     /// from_req creates a RuntimeContext from a hyper Request reference.
     pub fn from_req<T>(req: &hyper::Request<T>) -> Self {
         let headers = {
+
+            // fn_intent can be "httprequest" for direct invocations or "cloudevent" for OCI triggers.
             let fn_intent = req
                 .headers()
                 .get("Fn-Intent")
@@ -66,6 +78,7 @@ impl RuntimeContext {
                 .unwrap_or_else(|| "");
 
             if fn_intent == "httprequest" {
+                // Only a selection of the headers.
                 req.headers()
                     .iter()
                     .filter(|(k, _v)| *k == CONTENT_TYPE || k.as_str().starts_with("Fn-Http-H-"))
@@ -75,11 +88,12 @@ impl RuntimeContext {
                         m
                     })
             } else {
+                // Copy all headers.
                 req.headers().clone()
             }
         };
 
-        eprint!("***** headers: {:?}", &headers);
+        eprintln!("***** headers: {:?}", &headers);
 
         Self {
             config: CONFIG_FROM_ENV.clone(),

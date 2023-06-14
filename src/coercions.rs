@@ -11,26 +11,34 @@ pub enum ContentType {
     URLEncoded,
 }
 
+const JSON_MIME : &str = "application/json";
+const TEXT_MIME : &str = "text/plain";
+const FORM_MIME : &str = "application/x-www-form-urlencoded";
+const XML_TEXT_MIME : &str = "text/xml";
+const XML_APP_MIME : &str = "application/xml";
+const YAML_TEXT_MIME : &str = "text/yaml";
+const YAML_APP_MIME : &str = "application/yaml";
+
 impl ContentType {
     pub fn from_str(s: &str) -> Self {
         eprintln!("***** content-type: {}", s);
         match s {
-            "application/json" => ContentType::JSON,
-            "text/yaml" | "application/yaml" => ContentType::YAML,
-            "text/xml" | "application/xml" => ContentType::XML,
-            "text/plain" => ContentType::Plain,
-            "application/x-www-form-urlencoded" => ContentType::URLEncoded,
+            JSON_MIME => ContentType::JSON,
+            YAML_TEXT_MIME | YAML_APP_MIME => ContentType::YAML,
+            XML_TEXT_MIME | XML_APP_MIME => ContentType::XML,
+            TEXT_MIME => ContentType::Plain,
+            FORM_MIME => ContentType::URLEncoded,
             _ => ContentType::JSON,
         }
     }
 
     pub fn as_header_value(&self) -> String {
         match self {
-            Self::JSON => String::from("application/json"),
-            Self::YAML => String::from("text/yaml"),
-            Self::XML => String::from("application/xml"),
-            Self::Plain => String::from("text/plain"),
-            Self::URLEncoded => String::from("application/x-www-form-urlencoded"),
+            Self::JSON => String::from(JSON_MIME),
+            Self::YAML => String::from(YAML_TEXT_MIME),
+            Self::XML => String::from(XML_APP_MIME),
+            Self::Plain => String::from(TEXT_MIME),
+            Self::URLEncoded => String::from(FORM_MIME),
         }
     }
 }
