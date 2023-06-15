@@ -1,10 +1,18 @@
-FROM rust:1.70-alpine3.17 as builder
+FROM fnproject/rust:1.70-build as builder
 WORKDIR /build
-RUN apk add alpine-sdk
+
 COPY . .
 RUN cargo build --release
 
-FROM alpine:3.17
+FROM fnproject/rust:1.10-rt
+
+RUN \
+   ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
+
 WORKDIR /fn
 COPY --from=builder  /build/target/release/{FUNCTION_NAME} .
+
+ENV RUST_LOG=info
+ENV RUST_BACKTRACE=full
+
 CMD ["./{FUNCTION_NAME}"]

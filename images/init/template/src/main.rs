@@ -3,7 +3,8 @@ use tokio;
 
 #[tokio::main]
 async fn main() -> Result<(), FunctionError> {
-    if let Err(e) = Function::run(|_: &mut RuntimeContext, i: String| {
+
+    let invocation_result = Function::run(|_: &mut RuntimeContext, i: String| {
         Ok(format!(
             "Hello {}!",
             if i.is_empty() {
@@ -12,10 +13,11 @@ async fn main() -> Result<(), FunctionError> {
                 i.trim_end_matches("\n")
             }
         ))
-    })
-    .await
-    {
-        eprintln!("{}", e);
+    }).await;
+
+    if let Err(e) =  invocation_result {
+        eprintln!("function invocation error {}", e);
     }
+
     Ok(())
 }

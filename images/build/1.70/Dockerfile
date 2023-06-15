@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
-FROM rust:1.70-alpine3.17
+FROM rust:1.70-slim-buster
 
-RUN apk add --no-cache wget curl alpine-sdk
+RUN \
+   apt-get update && \
+   apt-get install -y wget curl && \
+   rm -rf /var/lib/apt/lists/*

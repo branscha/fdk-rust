@@ -25,6 +25,6 @@ fi
 
 rustversion=$1
 
-pushd images/build/${rustversion} && docker build -t fnproject/rust:${rustversion}-dev . && popd
-pushd images/runtime/${rustversion} && docker build -t fnproject/rust:${rustversion} . && popd
+pushd images/build/${rustversion} && docker build -t fnproject/rust:${rustversion}-build . && popd
+pushd images/runtime/${rustversion} && docker build -t fnproject/rust:${rustversion}-rt . && popd
 pushd images/init && docker build -t fnproject/rust:init . && popd

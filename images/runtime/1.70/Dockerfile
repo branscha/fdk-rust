@@ -14,10 +14,12 @@
 # limitations under the License.
 #
 
-FROM alpine:3.17
+FROM debian:buster-slim
 
-RUN apk update && apk upgrade \
-  && apk add ca-certificates \
-  && rm -rf /var/cache/apk/*
+RUN \
+   apt-get update && \
+   apt-get install -y ca-certificates && \
+   rm -rf /var/lib/apt/lists/* && \
+   ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
 
-RUN addgroup -g 1000 -S fn && adduser -S -u 1000 -G fn fn
+RUN adduser --uid 1000 --system --group fn 
