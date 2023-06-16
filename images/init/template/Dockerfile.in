@@ -1,10 +1,10 @@
-FROM fnproject/rust:1.70-build as builder
+FROM fnproject/rust:1.70-dev as builder
 WORKDIR /build
 
 COPY . .
 RUN cargo build --release
 
-FROM fnproject/rust:1.10-rt
+FROM fnproject/rust:1.70
 
 RUN \
    ln -sf /usr/share/zoneinfo/Europe/Brussels /etc/localtime
